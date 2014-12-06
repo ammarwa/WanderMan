@@ -8,7 +8,9 @@
 
 //reader.cpp
 
-#include <GLUT/glut.h>
+#include "freeglut.h"
+
+#include <OpenGL/gl.h>
 #include <fstream>
 
 #include "reader.h"

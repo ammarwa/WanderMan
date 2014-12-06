@@ -6,9 +6,10 @@
 //  Copyright (c) 2014 Ammar Mohamed ELWazir. All rights reserved.
 //
 
-//#include <GLUT/freeglut.h>
-#include <GLUT/glut.h>
+#include "freeglut.h"
+#include <OpenGL/gl.h>
 #include <stdio.h>
+#include <GLUT/glut.h>
 
 #include "reader.h"
 
@@ -24,11 +25,11 @@ void init(int argc, char **argv)
     glutInitWindowPosition(150, 150);
     glutCreateWindow("Generic RPG 3D");
     
-    //AllocConsole();
+    AllocConsole();
     freopen( "CON", "wt", stdout );
     freopen( "CON", "wt", stderr );
     
-    obj.load("girl.obj");
+    obj.load("cube.obj");
     
     glEnable (GL_DEPTH_TEST);
     glEnable (GL_LIGHTING);
@@ -42,7 +43,7 @@ void display(void)
     glLoadIdentity();
     
     glTranslatef(0.0f, -2.75f, -5.0f);
-    obj.draw("girl.obj");
+    obj.draw("cube.obj");
     
     glutSwapBuffers();
     angle += .1f;

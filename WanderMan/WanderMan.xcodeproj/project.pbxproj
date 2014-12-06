@@ -27,13 +27,16 @@
 
 /* Begin PBXFileReference section */
 		A0DBF6931A3363B3001A831B /* WanderMan */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = WanderMan; path = /Users/ammar/Documents/WanderMan/WanderMan/WanderMan/build/Debug/WanderMan; sourceTree = "<absolute>"; };
-		A0DBF6961A3363B3001A831B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		A0DBF6961A3363B3001A831B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = main.cpp; sourceTree = "<group>"; };
 		A0DBF69D1A3363E8001A831B /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		A0DBF69F1A3363F1001A831B /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		A0DBF6A31A336CDD001A831B /* girl.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = girl.mtl; sourceTree = "<group>"; };
 		A0DBF6A41A336CDD001A831B /* girl.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = girl.obj; path = ../source/girl.obj; sourceTree = "<group>"; };
 		A0DBF6A51A336F16001A831B /* reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = reader.cpp; sourceTree = "<group>"; };
 		A0DBF6A61A336F16001A831B /* reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = reader.h; sourceTree = "<group>"; };
+		A0DBF6A81A337275001A831B /* freeglut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = freeglut.h; sourceTree = "<group>"; };
+		A0DBF6A91A3372B5001A831B /* freeglut_ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = freeglut_ext.h; sourceTree = "<group>"; };
+		A0DBF6AA1A3372B5001A831B /* freeglut_std.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = freeglut_std.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +65,9 @@
 		A0DBF6951A3363B3001A831B /* WanderMan */ = {
 			isa = PBXGroup;
 			children = (
+				A0DBF6A91A3372B5001A831B /* freeglut_ext.h */,
+				A0DBF6AA1A3372B5001A831B /* freeglut_std.h */,
+				A0DBF6A81A337275001A831B /* freeglut.h */,
 				A0DBF6A41A336CDD001A831B /* girl.obj */,
 				A0DBF6961A3363B3001A831B /* main.cpp */,
 				A0DBF6A51A336F16001A831B /* reader.cpp */,
