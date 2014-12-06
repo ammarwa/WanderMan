@@ -10,7 +10,7 @@
 		A0DBF6971A3363B3001A831B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A0DBF6961A3363B3001A831B /* main.cpp */; };
 		A0DBF69E1A3363E8001A831B /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0DBF69D1A3363E8001A831B /* GLUT.framework */; };
 		A0DBF6A01A3363F1001A831B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0DBF69F1A3363F1001A831B /* OpenGL.framework */; };
-		A0DBF6A71A336F16001A831B /* reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A0DBF6A51A336F16001A831B /* reader.cpp */; };
+		A0DBF6AE1A337DAF001A831B /* RokkoParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A0DBF6AC1A337DAF001A831B /* RokkoParser.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,12 +31,9 @@
 		A0DBF69D1A3363E8001A831B /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		A0DBF69F1A3363F1001A831B /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		A0DBF6A31A336CDD001A831B /* girl.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = girl.mtl; sourceTree = "<group>"; };
-		A0DBF6A41A336CDD001A831B /* girl.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = girl.obj; path = ../source/girl.obj; sourceTree = "<group>"; };
-		A0DBF6A51A336F16001A831B /* reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = reader.cpp; sourceTree = "<group>"; };
-		A0DBF6A61A336F16001A831B /* reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = reader.h; sourceTree = "<group>"; };
-		A0DBF6A81A337275001A831B /* freeglut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = freeglut.h; sourceTree = "<group>"; };
-		A0DBF6A91A3372B5001A831B /* freeglut_ext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = freeglut_ext.h; sourceTree = "<group>"; };
-		A0DBF6AA1A3372B5001A831B /* freeglut_std.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = freeglut_std.h; sourceTree = "<group>"; };
+		A0DBF6A41A336CDD001A831B /* girl.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = girl.obj; sourceTree = "<group>"; };
+		A0DBF6AB1A337D8E001A831B /* RokkoParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RokkoParser.h; path = ../RokkoParser.h; sourceTree = "<group>"; };
+		A0DBF6AC1A337DAF001A831B /* RokkoParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RokkoParser.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,13 +62,9 @@
 		A0DBF6951A3363B3001A831B /* WanderMan */ = {
 			isa = PBXGroup;
 			children = (
-				A0DBF6A91A3372B5001A831B /* freeglut_ext.h */,
-				A0DBF6AA1A3372B5001A831B /* freeglut_std.h */,
-				A0DBF6A81A337275001A831B /* freeglut.h */,
-				A0DBF6A41A336CDD001A831B /* girl.obj */,
+				A0DBF6AB1A337D8E001A831B /* RokkoParser.h */,
 				A0DBF6961A3363B3001A831B /* main.cpp */,
-				A0DBF6A51A336F16001A831B /* reader.cpp */,
-				A0DBF6A61A336F16001A831B /* reader.h */,
+				A0DBF6AC1A337DAF001A831B /* RokkoParser.cpp */,
 			);
 			path = WanderMan;
 			sourceTree = "<group>";
@@ -79,6 +72,7 @@
 		A0DBF6A21A336CDD001A831B /* source */ = {
 			isa = PBXGroup;
 			children = (
+				A0DBF6A41A336CDD001A831B /* girl.obj */,
 				A0DBF6A31A336CDD001A831B /* girl.mtl */,
 			);
 			path = source;
@@ -140,8 +134,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A0DBF6A71A336F16001A831B /* reader.cpp in Sources */,
 				A0DBF6971A3363B3001A831B /* main.cpp in Sources */,
+				A0DBF6AE1A337DAF001A831B /* RokkoParser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
