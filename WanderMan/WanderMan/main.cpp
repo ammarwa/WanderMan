@@ -6,35 +6,66 @@
 //  Copyright (c) 2014 Ammar Mohamed ELWazir. All rights reserved.
 //
 
-#include <iostream>
+//#include <GLUT/freeglut.h>
 #include <GLUT/glut.h>
+#include <stdio.h>
 
-void Display(){
-    
-}
+#include "reader.h"
 
-void anim(){
-    
-}
+Reader obj;
 
+float angle;
 
-int main(int argc, char** argv)
+void init(int argc, char **argv)
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB|GLUT_DEPTH);
-    glutInitWindowSize(1000,600);
-    glutInitWindowPosition(200, 150);
-    glutCreateWindow("WanderMan");
-    glutDisplayFunc(Display);
-    //glutKeyboardFunc(HandleHandleSpecialKeyPress);
-    //glutSpecialFunc(HandleSpecialKey);
-    glutIdleFunc(anim);
+    glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+    glutInitWindowSize(800, 600);
+    glutInitWindowPosition(150, 150);
+    glutCreateWindow("Generic RPG 3D");
     
-    glShadeModel(GL_SMOOTH);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_COLOR_MATERIAL);
-    glClearColor(1.0,1.0,1.0,0.0);
+    //AllocConsole();
+    freopen( "CON", "wt", stdout );
+    freopen( "CON", "wt", stderr );
+    
+    obj.load("girl.obj");
+    
+    glEnable (GL_DEPTH_TEST);
+    glEnable (GL_LIGHTING);
+    glEnable (GL_LIGHT0);
+}
+
+void display(void)
+{
+    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+    
+    glTranslatef(0.0f, -2.75f, -5.0f);
+    obj.draw("girl.obj");
+    
+    glutSwapBuffers();
+    angle += .1f;
+}
+
+void reshape( int width, int height )
+{
+    glViewport(0, 0, (GLsizei)width, (GLsizei)height );
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(60, (GLfloat)width / (GLfloat)height, 1.0, 100.0);
+    glMatrixMode(GL_MODELVIEW);
+}
+
+int main(int argc, char **argv)
+{
+    
+    init(argc, argv);
+    
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutIdleFunc(display);
     glutMainLoop();
     
+    return 0;
 }
