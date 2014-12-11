@@ -1,6 +1,6 @@
 #include <stdafx.h>
 #include <stdlib.h>
-#include <windows.h>
+//#include <windows.h>
 #include "glew.h"
 #include "glaux.h"
 #include <glut.h>
@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include<string.h>
 #include <iostream>
-
+#include <time.h>
 
 #pragma comment(lib, "glew32.lib")
 #pragma comment(lib, "GLAUX.lib")
@@ -19,11 +19,10 @@
 int numOfObs = 10;
 int i = 0;
 
-
 int windowWidth = 1024;
 int windowHeight = 668;
 
-int move = 0;
+double move = 0;
 
 float aspect = float(windowWidth) / float(windowHeight);
 
@@ -33,6 +32,14 @@ double center [] = { 0, 0, 0 };
 
 double up [] = { 0, 1, 0 };
 
+double camModeX = eye[0];
+double camModeZ = eye[2];
+double moveD = 0;
+
+double camContX = 0;
+double camContY = 0;
+double camContZ = 0;
+
 GLMmodel* pmodel1 = NULL;
 GLMmodel* pmodel2 = NULL;
 
@@ -41,6 +48,19 @@ GLuint texBufferID;
 GLuint texBufferID1;
 
 float xrot, yrot;
+
+double posX[100];
+double posZ[100];
+
+int j = 0;
+
+bool startFlag = false;
+
+bool flag  = true;
+
+int mve = 0;
+
+int varb = 0;
 
 void CreateFromBMP(UINT *textureID, LPSTR strFileName)
 {
@@ -181,87 +201,80 @@ void drawmodel_obs(void)
 
 }
 
+void genPos(){
+	for(int i = 0; i < 100; i++){
+		srand(time(0));
+		int xx = rand();
+		srand(time(0));
+		int zz = rand();
+		if(i%2==0){
+			posX[i] = xx%5;
+		}else{
+			posX[i] = -1*(zz%5);
+		}
+	}
+}
+
+void drawObs(){
+		glPushMatrix();
+		if(mve>40-move){
+			mve = 0;
+			mve = -move;
+			j++;
+		}
+		glTranslated(30-mve,0,posX[j]);
+		drawmodel_obs();
+		glPopMatrix();
+}
 
 void display(void)
 {
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearColor(1.0, 1.0, 1.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(eye[0]+move, eye[1], eye[2], center[0]+move, center[1], center[2], up[0], up[1], up[2]);
-	
+	gluLookAt(camModeX+move+camContX, eye[1]+camContY, camModeZ+camContZ, center[0]+move, center[1], center[2], up[0], up[1], up[2]);
 
+	//Sea
 	glPushMatrix();
 	CreateFromBMP(&texBufferID, "3.bmp"); 
 	glEnable(GL_TEXTURE_2D);
-	glScaled(50,1,6);
+	glScaled(30,1,15);
 	glBegin(GL_QUADS);
-		// Bottom Face
-		//glNormal3f( 0.0f,-1.0f, 0.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-99.0f, -99.0f, -99.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f( 99.0f, -99.0f, -99.0f);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f( 99.0f, -99.0f,  99.0f);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-99.0f, -99.0f,  99.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-10.0f, -10.0f, -10.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 10.0f, -10.0f, -10.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 10.0f, -10.0f,  10.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-10.0f, -10.0f,  10.0f);
 	glEnd();
 	glPopMatrix();
 
-
+	//Sky
 	glPushMatrix();
 	CreateFromBMP(&texBufferID, "free_wallpaper_2.bmp"); 
 	glEnable(GL_TEXTURE_2D);
 	glTranslated(850,0,0);
-	glScaled(1,2,5);
+	glScaled(1,20,50);
 	glRotated(90,0,0,1);
 	glRotated(90,0,1,0);
 	glBegin(GL_QUADS);
-		// Bottom Face
-		//glNormal3f( 0.0f,-1.0f, 0.0f);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-99.0f, -99.0f, -99.0f);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f( 99.0f, -99.0f, -99.0f);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f( 99.0f, -99.0f,  99.0f);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-99.0f, -99.0f,  99.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-10.0f, -10.0f, -10.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 10.0f, -10.0f, -10.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 10.0f, -10.0f,  10.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-10.0f, -10.0f,  10.0f);
 	glEnd();
 	glPopMatrix();
 
 	//Char
 	glPushMatrix();
-	glTranslated(-5+move,0,0);
+	glTranslated(-5+move,0,0+moveD);
 	glRotated(90, 0, 1, 0);
 	glScaled(0.7, 0.7, 0.7);
 	drawmodel_char();
 	glPopMatrix();
 
-	//floor
-	/*glPushMatrix();
-	glTranslated(0,-5,0);
-	//glScaled(2, 2, 2);
-	glRotated(90, 1, 0, 0);
-	drawmodel_test();
-	glPopMatrix();
-	
-	*/
-
-	//Obs.
-	
-		if(i<10){
-		glPushMatrix();
-		//glScaled(1,1,1);
-		glTranslated(5,0,0.3);
-		drawmodel_obs();
-		glPopMatrix();
-		i++;
-		} else {
-		glPushMatrix();
-		//glScaled(1,1,1);
-		glTranslated(5+move,0,0.3);
-		drawmodel_obs();
-		glPopMatrix();
-		i=0;
-		}
-	
-	
-
+		//Obs
+			drawObs();
+		
 
 	glFlush ();
 	glutSwapBuffers();
@@ -270,24 +283,69 @@ void display(void)
 
 void anim(void){
 	move+=1;
-	/*if(i>10){
-		i = 0;
-	}*/
-	//for(int i=0;i<100000000;i++);
+	flag = true;
+	mve+=1;
+	glutPostRedisplay();
+}
+
+void HandleSpecialKey(int k,int mx,int my)
+{
+	
+	switch(k){
+
+	//Speeding Char
+	case GLUT_KEY_UP: move+=3;break;
+
+	//Moving Char
+	case GLUT_KEY_LEFT: moveD--;break;
+	case GLUT_KEY_RIGHT: moveD++;break;
+	
+	default:;break;
+
+	}
+	glutPostRedisplay();
+}
+
+void HandleHandleSpecialKeyPress( unsigned char k, int x, int y)
+{
+	switch(k){
+
+	//Camera Modes
+	//Far
+	case 'z':
+		camModeX = eye[0];camModeZ = eye[2];break;
+	//near
+	case 'x':
+		camModeX = eye[0]+4.5;camModeZ = eye[2];break;
+
+	//Camera Controls
+	case 'w': camContX += 0;camContY += 1;camContZ += 1;break;
+	case 'a': camContX -= 1;camContY += 0;camContZ -= 1;break;
+	case 's': camContX += 0;camContY -= 1;camContZ -= 1;break;
+	case 'd': camContX += 1;camContY += 0;camContZ += 1;break;
+
+	//Game Start
+	case 'n': startFlag = true;glutIdleFunc(anim);break;
+
+	}
 	glutPostRedisplay();
 }
 
 int main(void)
 {
+	genPos();
 	glutInitWindowSize(windowWidth, windowHeight);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutCreateWindow("WanderMan");
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
 	gluPerspective(30, aspect, 0.1, 1000);
-	glutIdleFunc(anim);
 	glutDisplayFunc(display);
-	glEnable(GL_DEPTH_TEST);	
+	glutKeyboardFunc(HandleHandleSpecialKeyPress);
+	glutSpecialFunc(HandleSpecialKey);
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_COLOR_MATERIAL);
 	glClearColor(0.0,0.0,0.0,0.0);
 	glutMainLoop();
 	return 0;
