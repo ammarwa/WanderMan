@@ -1,4 +1,5 @@
-#include <stdafx.h>
+#include "stdafx.h"
+//#include "..\stdafx.h"
 #include <stdlib.h>
 //#include <windows.h>
 #include "glew.h"
@@ -13,8 +14,22 @@
 #include <iostream>
 #include <time.h>
 
+#include <tchar.h>
+using namespace std;
+
 #pragma comment(lib, "glew32.lib")
 #pragma comment(lib, "GLAUX.lib")
+
+void output(void);
+void fill_array(void);
+
+int array[251][21];
+
+int lives;
+
+int camera_mode;
+
+double eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ;
 
 int numOfObs = 10;
 int i = 0;
@@ -22,7 +37,13 @@ int i = 0;
 int windowWidth = 1024;
 int windowHeight = 668;
 
-double move = 0;
+int manX, manZ;
+
+bool pause;
+bool game_over;
+bool level_1, level_2, level_3;
+
+int score;
 
 float aspect = float(windowWidth) / float(windowHeight);
 
@@ -34,7 +55,7 @@ double up [] = { 0, 1, 0 };
 
 double camModeX = eye[0];
 double camModeZ = eye[2];
-double moveD = 0;
+
 
 double camContX = 0;
 double camContY = 0;
@@ -61,6 +82,60 @@ bool flag  = true;
 int mve = 0;
 
 int varb = 0;
+
+void fill_array(){
+	int random;
+	srand(time(NULL));
+	//level 1
+	for (int i = 15; i < 85; i+=15)
+	{
+		for (int j = 0; j < 21; j++)
+		{
+			random = rand()%10+1;
+			if(random == 2){
+				if(array[i][j-1] == 2)
+				break;
+			}
+			array[i][j] = random;
+		}
+	}
+	//level 2
+	for (int i = 85; i < 170; i+=10)
+	{
+		for (int j = 0; j < 21; j++)
+		{
+			random = rand()%10+1;
+			if(random == 2){
+				if(array[i][j-1] == 2)
+				break;
+			}
+			array[i][j] = random;
+		}
+	}
+	//level 3
+	for (int i = 170; i < 251; i+=5)
+	{
+		for (int j = 0; j < 21; j++)
+		{
+			random = rand()%10+1;
+			if(random == 2){
+				if(array[i][j-1] == 2)
+				break;
+			}
+			array[i][j] = random;
+		}
+	}
+	//Game Borders
+	for (int i = 0; i < 251; i++)
+	{
+		array[i][0] = 2;
+		array[i][20] = 2;
+	}
+	for (int i = 0; i < 21; i++)
+	{
+		array[250][i] = 2;
+	}
+}
 
 void CreateFromBMP(UINT *textureID, LPSTR strFileName)
 {
@@ -215,16 +290,30 @@ void genPos(){
 	}
 }
 
-void drawObs(){
+void drawObs(int x, int z){
 		glPushMatrix();
-		if(mve>40-move){
+		if(mve>40-manX){
 			mve = 0;
-			mve = -move;
+			mve = -manX;
 			j++;
 		}
-		glTranslated(30-mve,0,posX[j]);
+		//glTranslated(30-mve,0,posX[j]);
+		glTranslated(x, 0, z);
 		drawmodel_obs();
 		glPopMatrix();
+}
+
+void draw_all_obs(){
+	for (int i = 0; i < manX + 60; i++)
+	{
+		for (int j = 0; j < 21; j++)
+		{
+			if(array[i][j] == 2)
+			{
+				drawObs(i, j);
+			}
+		}
+	}
 }
 
 void display(void)
@@ -233,13 +322,15 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(camModeX+move+camContX, eye[1]+camContY, camModeZ+camContZ, center[0]+move, center[1], center[2], up[0], up[1], up[2]);
+	//gluLookAt(camModeX+manX+camContX, eye[1]+camContY, camModeZ+camContZ, center[0]+manX, center[1], center[2], up[0], up[1], up[2]);
+	gluLookAt(eyeX+manX, eyeY, eyeZ, centerX+manX, centerY, centerZ, upX, upY, upZ);
 
 	//Sea
 	glPushMatrix();
 	CreateFromBMP(&texBufferID, "3.bmp"); 
 	glEnable(GL_TEXTURE_2D);
-	glScaled(30,1,15);
+	glTranslated(200,0,50);
+	glScaled(50,1,25);
 	glBegin(GL_QUADS);
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(-10.0f, -10.0f, -10.0f);
 		glTexCoord2f(0.0f, 1.0f); glVertex3f( 10.0f, -10.0f, -10.0f);
@@ -252,7 +343,7 @@ void display(void)
 	glPushMatrix();
 	CreateFromBMP(&texBufferID, "free_wallpaper_2.bmp"); 
 	glEnable(GL_TEXTURE_2D);
-	glTranslated(850,0,0);
+	glTranslated(850, 0, 10);
 	glScaled(1,20,50);
 	glRotated(90,0,0,1);
 	glRotated(90,0,1,0);
@@ -266,44 +357,122 @@ void display(void)
 
 	//Char
 	glPushMatrix();
-	glTranslated(-5+move,0,0+moveD);
+	glTranslated(manX, 0, manZ);
 	glRotated(90, 0, 1, 0);
 	glScaled(0.7, 0.7, 0.7);
 	drawmodel_char();
 	glPopMatrix();
 
-		//Obs
-			drawObs();
-		
+	//Obs
+	draw_all_obs();
 
-	glFlush ();
+	glFlush();
 	glutSwapBuffers();
 
 }
 
 void anim(void){
-	move+=1;
-	flag = true;
-	mve+=1;
-	glutPostRedisplay();
+	if(!game_over && !pause)
+	{
+		if(manX < 248){
+			if(array[manX+2][manZ] == 2){
+				lives--;
+				score-=10;
+				cout << "You have hit a wall, you have " << to_string(lives);
+				if(lives == 1)cout << " life left, it's your last chance" << '\n' << '\n';
+				else cout << " lives left" << '\n' << '\n';
+				if(lives == 0)
+				{
+					game_over = true;
+					cout << "You lose !! Game is Over !!" << "your score is: " << to_string(score) << '\n' << '\n';
+				}
+				else {
+					cout << "Press p to proceed" << '\n' << '\n';
+					pause = true;
+				}
+			}
+			else{
+				manX+=1;
+				if(manX < 85 && !level_1){
+					level_1 = true;
+					score += 30;
+					cout << "You are now in level 1" << '\n' << '\n';
+				}
+				else if(manX >= 85 && manX < 170 && !level_2){
+					level_2 = true;
+					score += 30;
+					cout << "You entered now level 2" << '\n' << '\n';
+				}
+				else if(manX >= 170 && manX < 251 && !level_3){
+					level_3 = true;
+					score += 30;
+					cout << "You entered now level 3, it's the final level !!" << '\n' << '\n';
+				}
+				glutPostRedisplay();
+			}
+		}
+		else{
+			game_over = true;
+			cout << "You win !! Game is Over !!" << "your score is: " << to_string(score) << '\n' << '\n';
+		}
+		flag = true;
+		mve+=1;
+	}
 }
 
 void HandleSpecialKey(int k,int mx,int my)
 {
+	if(!game_over && !pause){
+		switch(k){
+
+			//Speeding Char
+			case GLUT_KEY_UP: 
+				if(startFlag)manX+=3;
+				if(manX < 248){
+					if(array[manX][manZ] == 2 || array[manX+1][manZ] == 2 || array[manX+2][manZ] == 2){
+						lives--;
+						score-=10;
+						cout << "You have hit a wall, you have " << to_string(lives);
+						if(lives == 1)cout << " life left, it's your last chance" << '\n' << '\n';
+						else cout << " lives left" << '\n' << '\n';
+						if(lives == 0)
+						{
+							game_over = true;
+							cout << "You lose !! Game is Over !!"  << "your score is: " << to_string(score) << '\n' << '\n';
+						}
+						else {
+							cout << "Press p to proceed" << '\n' << '\n';
+							pause = true;
+						}
+						if(array[manX][manZ] == 2)manX-=2;
+						else if(array[manX+1][manZ] == 2)manX-=1;
+					}
+				}
+				else{
+					manX = 248;
+					game_over = true;
+					cout << "You win !! Game is Over !!" << "your score is: " << to_string(score) << '\n' << '\n';
+				}
+				break;
+
+			//Moving Char
+			case GLUT_KEY_LEFT: 
+				if(manZ > 1){
+					manZ--;eyeZ--;centerZ--;
+					break;
+				}
+
+			case GLUT_KEY_RIGHT: 
+				if(manZ < 19){
+					manZ++;eyeZ++;centerZ++;
+					break;
+				}
 	
-	switch(k){
+			default:;break;
 
-	//Speeding Char
-	case GLUT_KEY_UP: move+=3;break;
-
-	//Moving Char
-	case GLUT_KEY_LEFT: moveD--;break;
-	case GLUT_KEY_RIGHT: moveD++;break;
-	
-	default:;break;
-
+		}
+		glutPostRedisplay();
 	}
-	glutPostRedisplay();
 }
 
 void HandleHandleSpecialKeyPress( unsigned char k, int x, int y)
@@ -313,10 +482,22 @@ void HandleHandleSpecialKeyPress( unsigned char k, int x, int y)
 	//Camera Modes
 	//Far
 	case 'z':
-		camModeX = eye[0];camModeZ = eye[2];break;
+		if(camera_mode == 0){
+			eyeX-=5;centerX-=5;eyeY+=0.5;
+			camModeX = eye[0];camModeZ = eye[2];
+			camera_mode = 1;
+			cout << "Camera mode set to third person view" << '\n' << '\n';
+		}
+		break;
 	//near
 	case 'x':
-		camModeX = eye[0]+4.5;camModeZ = eye[2];break;
+		if(camera_mode == 1){
+			eyeX+=5;centerX+=5;eyeY-=0.5;
+			camModeX = eye[0]+4.5;camModeZ = eye[2];
+			camera_mode = 0;
+			cout << "Camera mode set to first person view" << '\n' << '\n';
+		}
+		break;
 
 	//Camera Controls
 	case 'w': camContX += 0;camContY += 1;camContZ += 1;break;
@@ -327,13 +508,53 @@ void HandleHandleSpecialKeyPress( unsigned char k, int x, int y)
 	//Game Start
 	case 'n': startFlag = true;glutIdleFunc(anim);break;
 
+	case 'r': eyeX+=1;break;
+	case 'f': eyeX-=1;break;
+	case 't': eyeY+=1;break;
+	case 'g': eyeY-=1;break;
+	case 'y': eyeZ+=1;break;
+	case 'h': eyeZ-=1;break;
+	case 'u': centerX+=1;break;
+	case 'j': centerX-=1;break;
+	case 'i': centerY+=1;break;
+	case 'k': centerY-=1;break;
+	case 'o': centerZ+=1;break;
+	case 'l': centerZ-=1;break;
+	
+	case 'p': 
+		if(pause){
+			manX+=4;
+			pause = false;
+			cout << "Proceeding !!" << '\n' << '\n';
+		}
+		break;
+
 	}
 	glutPostRedisplay();
+}
+
+void output(){
+	cout << "eyeX: " << to_string(eyeX) << '\n' << '\n';
+	cout << "eyeY: " << to_string(eyeY) << '\n' << '\n';
+	cout << "eyeZ: " << to_string(eyeZ) << '\n' << '\n';
+	cout << "centerX: " << to_string(centerX) << '\n' << '\n';
+	cout << "centerY: " << to_string(centerY) << '\n' << '\n';
+	cout << "centerZ: " << to_string(centerZ) << '\n' << '\n';
+}
+
+void welcome(){
+	cout << "Welcome to Wander Man !!!" << '\n' << '\n';
+	cout << ":::Game Instructions:::" << '\n';
+	cout << "Press n to start" << '\n';
+	cout << "Use left and right arrows to direct your player" << '\n';
+	cout << "Use up key to accelerate" << '\n';
+	cout << "Use x key for first person view mode and z key for third person view mode" << '\n' << '\n';
 }
 
 int main(void)
 {
 	genPos();
+	welcome();
 	glutInitWindowSize(windowWidth, windowHeight);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutCreateWindow("WanderMan");
@@ -347,6 +568,20 @@ int main(void)
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_COLOR_MATERIAL);
 	glClearColor(0.0,0.0,0.0,0.0);
+	fill_array();
+	eyeX = -5;
+	eyeY = 1;
+	eyeZ = 9.7;
+	centerX = 0;
+	centerY = 0;
+	centerZ = 10;
+	upX = 0;
+	upY = 1;
+	upZ = 0;
+	manX = 0;
+	manZ = 10;
+	lives = 3;
+	camera_mode = 1;
 	glutMainLoop();
 	return 0;
 }
